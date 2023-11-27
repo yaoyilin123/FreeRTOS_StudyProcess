@@ -1,13 +1,13 @@
 #if 0
-//ÊµÑé1£ºÀûÓÃ¾²Ì¬ÄÚ´æ´´½¨µ¥ÈÎÎñ£¨ ÔÚFreeRTOSConfig.hÖĞĞèÒª½«configSUPPORT_STATIC_ALLOCATIONÖÃ1 )
+//å®éªŒ1ï¼šåˆ©ç”¨é™æ€å†…å­˜åˆ›å»ºå•ä»»åŠ¡ï¼ˆ åœ¨FreeRTOSConfig.hä¸­éœ€è¦å°†configSUPPORT_STATIC_ALLOCATIONç½®1 )
 //FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
-//Ó²¼ş
+//ç¡¬ä»¶
 #include "bsp_led.h"
 #include "bsp_usart.h"
 
-//Ê¹ÓÃµ½µÄÕ»¡¢TCB¡¢ÈÎÎñ¾ä±ú
+//ä½¿ç”¨åˆ°çš„æ ˆã€TCBã€ä»»åŠ¡å¥æŸ„
 static StackType_t AppTaskCreate_Stack[configMINIMAL_STACK_SIZE];
 static StackType_t LED_Task_Stack[configMINIMAL_STACK_SIZE];
 static StaticTask_t AppTaskCreate_TCB;
@@ -16,16 +16,16 @@ static TaskHandle_t LED_Task_Handle;
 static TaskHandle_t AppTaskCreate_Handle;
 
 
-/* ¿ÕÏĞÈÎÎñÈÎÎñ¶ÑÕ» */
+/* ç©ºé—²ä»»åŠ¡ä»»åŠ¡å †æ ˆ */
 static StackType_t Idle_Task_Stack[configMINIMAL_STACK_SIZE];
-/* ¶¨Ê±Æ÷ÈÎÎñ¶ÑÕ» */
+/* å®šæ—¶å™¨ä»»åŠ¡å †æ ˆ */
 static StackType_t Timer_Task_Stack[configTIMER_TASK_STACK_DEPTH];
-/* ¿ÕÏĞÈÎÎñ¿ØÖÆ¿é */
+/* ç©ºé—²ä»»åŠ¡æ§åˆ¶å— */
 static StaticTask_t Idle_Task_TCB;	
-/* ¶¨Ê±Æ÷ÈÎÎñ¿ØÖÆ¿é */
+/* å®šæ—¶å™¨ä»»åŠ¡æ§åˆ¶å— */
 static StaticTask_t Timer_Task_TCB;
 
-/**********  º¯ÊıÉùÃ÷ **********/
+/**********  å‡½æ•°å£°æ˜ **********/
 static void Hardware_Init(void);
 static void AppTaskCreate(void);
 static void LED_Task(void* pvParameters);
@@ -40,12 +40,12 @@ void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer,
 
 int main(void)
 {	
-	//Ó²¼ş³õÊ¼»¯
+	//ç¡¬ä»¶åˆå§‹åŒ–
   Hardware_Init();
 	
-	printf("ÕâÊÇÒ»¸öSTM32_FreeRTOS_¾²Ì¬´´½¨µ¥ÈÎÎñµÄÊµÑé£¡\n");
+	printf("è¿™æ˜¯ä¸€ä¸ªSTM32_FreeRTOS_é™æ€åˆ›å»ºå•ä»»åŠ¡çš„å®éªŒï¼\n");
 	
-	//¾²Ì¬ÄÚ´æÏÂ´´½¨ÈÎÎñ
+	//é™æ€å†…å­˜ä¸‹åˆ›å»ºä»»åŠ¡
 	AppTaskCreate_Handle =  xTaskCreateStatic(	(TaskFunction_t) AppTaskCreate,
 																					(const char *)  "AppTaskCreate",
 																					(uint32_t	) configMINIMAL_STACK_SIZE,
@@ -54,19 +54,19 @@ int main(void)
 																					(StackType_t*) AppTaskCreate_Stack,
 																					(StaticTask_t *)&AppTaskCreate_TCB ) ;
 	if(NULL != AppTaskCreate_Handle)
-	//ÆôÓÃµ÷¶ÈÆ÷
+	//å¯ç”¨è°ƒåº¦å™¨
 		vTaskStartScheduler();
 	
 	while(1)
 	{
-		printf("ERROR:µ÷¶ÈÆ÷Î´ÆôÓÃ³É¹¦£¡\n");
+		printf("ERROR:è°ƒåº¦å™¨æœªå¯ç”¨æˆåŠŸï¼\n");
 	};
 }
 
 
 static void Hardware_Init(void)
 {
-	/* ×¢Òâ£¬ÔÚFreeRTOSÏÂ£¬¾ù²ÉÓÃµÚËÄ¸ö·Ö×é£¬ÉèÖÃÒ»´Î¼´¿É */
+	/* æ³¨æ„ï¼Œåœ¨FreeRTOSä¸‹ï¼Œå‡é‡‡ç”¨ç¬¬å››ä¸ªåˆ†ç»„ï¼Œè®¾ç½®ä¸€æ¬¡å³å¯ */
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 	
 	LED_GPIO_Config();
@@ -76,9 +76,9 @@ static void Hardware_Init(void)
 
 static void AppTaskCreate(void)
 {
-  taskENTER_CRITICAL();           //½øÈëÁÙ½ç
+  taskENTER_CRITICAL();           //è¿›å…¥ä¸´ç•Œ
 	
-	//ÔÚ¸ÃÈÎÎñÏÂ´´½¨LEDÈÎÎñ
+	//åœ¨è¯¥ä»»åŠ¡ä¸‹åˆ›å»ºLEDä»»åŠ¡
 	LED_Task_Handle = xTaskCreateStatic(	(TaskFunction_t) LED_Task,
 																				(const char *)  "LED_Task",
 																				(uint32_t	) configMINIMAL_STACK_SIZE,
@@ -87,12 +87,12 @@ static void AppTaskCreate(void)
 																				(StackType_t*) LED_Task_Stack,
 																				(StaticTask_t *)&LED_Task_TCB ) ;
 	if(NULL != LED_Task_Handle)
-		printf("LED_Task´´½¨³É¹¦£¡ \n");
+		printf("LED_Taskåˆ›å»ºæˆåŠŸï¼ \n");
 	else
-		printf("LED_Task´´½¨Ê§°Ü...\n");
+		printf("LED_Taskåˆ›å»ºå¤±è´¥...\n");
 	vTaskDelete(AppTaskCreate_Handle);
 
-  taskEXIT_CRITICAL();            //ÍË³öÁÙ½çÇø
+  taskEXIT_CRITICAL();            //é€€å‡ºä¸´ç•ŒåŒº
 }
 
 static void LED_Task(void* pvParameters)
@@ -100,55 +100,55 @@ static void LED_Task(void* pvParameters)
 	while(1)
 	{
 			LED1_ON;
-			vTaskDelay(1000);   /* ÑÓÊ±500¸ötick */
+			vTaskDelay(1000);   /* å»¶æ—¶500ä¸ªtick */
 			printf("LED_Task Running,LED1_ON\r\n");
 			
 			LED1_OFF;     
-			vTaskDelay(1000);   /* ÑÓÊ±500¸ötick */		 		
+			vTaskDelay(1000);   /* å»¶æ—¶500ä¸ªtick */		 		
 			printf("LED_Task Running,LED1_OFF\r\n");
 	}
 }
 
 
-//»ñµÃ¿ÕÏĞÈÎÎñµÄÄÚ´æÏà¹ØĞÅÏ¢
+//è·å¾—ç©ºé—²ä»»åŠ¡çš„å†…å­˜ç›¸å…³ä¿¡æ¯
 void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, 
 								   StackType_t **ppxIdleTaskStackBuffer, 
 								   uint32_t *pulIdleTaskStackSize)
 {
-	*ppxIdleTaskTCBBuffer=&Idle_Task_TCB;/* ÈÎÎñ¿ØÖÆ¿éÄÚ´æ */
-	*ppxIdleTaskStackBuffer=Idle_Task_Stack;/* ÈÎÎñ¶ÑÕ»ÄÚ´æ */
-	*pulIdleTaskStackSize=configMINIMAL_STACK_SIZE;/* ÈÎÎñ¶ÑÕ»´óĞ¡ */
+	*ppxIdleTaskTCBBuffer=&Idle_Task_TCB;/* ä»»åŠ¡æ§åˆ¶å—å†…å­˜ */
+	*ppxIdleTaskStackBuffer=Idle_Task_Stack;/* ä»»åŠ¡å †æ ˆå†…å­˜ */
+	*pulIdleTaskStackSize=configMINIMAL_STACK_SIZE;/* ä»»åŠ¡å †æ ˆå¤§å° */
 }
 
-//»ñÈ¡¶¨Ê±Æ÷ÈÎÎñµÄÄÚ´æÏà¹ØĞÅÏ¢
+//è·å–å®šæ—¶å™¨ä»»åŠ¡çš„å†…å­˜ç›¸å…³ä¿¡æ¯
 void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, 
 									StackType_t **ppxTimerTaskStackBuffer, 
 									uint32_t *pulTimerTaskStackSize)
 {
-	*ppxTimerTaskTCBBuffer=&Timer_Task_TCB;/* ÈÎÎñ¿ØÖÆ¿éÄÚ´æ */
-	*ppxTimerTaskStackBuffer=Timer_Task_Stack;/* ÈÎÎñ¶ÑÕ»ÄÚ´æ */
-	*pulTimerTaskStackSize=configTIMER_TASK_STACK_DEPTH;/* ÈÎÎñ¶ÑÕ»´óĞ¡ */
+	*ppxTimerTaskTCBBuffer=&Timer_Task_TCB;/* ä»»åŠ¡æ§åˆ¶å—å†…å­˜ */
+	*ppxTimerTaskStackBuffer=Timer_Task_Stack;/* ä»»åŠ¡å †æ ˆå†…å­˜ */
+	*pulTimerTaskStackSize=configTIMER_TASK_STACK_DEPTH;/* ä»»åŠ¡å †æ ˆå¤§å° */
 }
 
 
 
 #elif  0
-//ÊµÑé2£ºÀûÓÃ¶¯Ì¬ÄÚ´æ´´½¨¶àÈÎÎñ(ÔÚFreeRTOSConfig.hÖĞĞèÒª½«configSUPPORT_STATIC_ALLOCATIONÖÃ0)
+//å®éªŒ2ï¼šåˆ©ç”¨åŠ¨æ€å†…å­˜åˆ›å»ºå¤šä»»åŠ¡(åœ¨FreeRTOSConfig.hä¸­éœ€è¦å°†configSUPPORT_STATIC_ALLOCATIONç½®0)
 //FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
-//Ó²¼ş
+//ç¡¬ä»¶
 #include "bsp_led.h"
 #include "bsp_usart.h"
 
-//Ê¹ÓÃµ½µÄÈÎÎñ¾ä±ú
-//ÔÚ¶¯Ì¬ÄÚ´æÏÂ£¬Ö»ĞèÒª´´½¨ÈÎÎñµÄÈÎÎñ¾ä±ú¼´¿É£¬Õ»¡¢tcb²»Ğè´´½¨
+//ä½¿ç”¨åˆ°çš„ä»»åŠ¡å¥æŸ„
+//åœ¨åŠ¨æ€å†…å­˜ä¸‹ï¼Œåªéœ€è¦åˆ›å»ºä»»åŠ¡çš„ä»»åŠ¡å¥æŸ„å³å¯ï¼Œæ ˆã€tcbä¸éœ€åˆ›å»º
 static TaskHandle_t LED1_Task_Handle;	
 static TaskHandle_t LED2_Task_Handle;	
 static TaskHandle_t AppTaskCreate_Handle;
 
 
-/**********  º¯ÊıÉùÃ÷ **********/
+/**********  å‡½æ•°å£°æ˜ **********/
 static void Hardware_Init(void);
 static void AppTaskCreate(void);
 static void LED1_Task(void* pvParameters);
@@ -158,14 +158,14 @@ static void LED2_Task(void* pvParameters);
 int main(void)
 {	
 	BaseType_t xReturn = pdPASS;
-	//Ó²¼ş³õÊ¼»¯
+	//ç¡¬ä»¶åˆå§‹åŒ–
   Hardware_Init();
 	
-	//ÄÚ´æµÄ³õÊ¼»¯RTOS×Ô¶¯°ïÖú³õÊ¼»¯£¬ÎŞĞèÓÃ»§×Ô¼ºÅäÖÃ£¬Èô»»ÁËRTT liteos ĞèÒªÓÃ»§ÅäÖÃ
+	//å†…å­˜çš„åˆå§‹åŒ–RTOSè‡ªåŠ¨å¸®åŠ©åˆå§‹åŒ–ï¼Œæ— éœ€ç”¨æˆ·è‡ªå·±é…ç½®ï¼Œè‹¥æ¢äº†RTT liteos éœ€è¦ç”¨æˆ·é…ç½®
 	
-	printf("ÕâÊÇÒ»¸öSTM32_FreeRTOS_¶¯Ì¬´´½¨¶àÈÎÎñµÄÊµÑé£¡\n");
+	printf("è¿™æ˜¯ä¸€ä¸ªSTM32_FreeRTOS_åŠ¨æ€åˆ›å»ºå¤šä»»åŠ¡çš„å®éªŒï¼\n");
 	
-	//¶¯Ì¬ÄÚ´æÏÂ´´½¨ÈÎÎñ
+	//åŠ¨æ€å†…å­˜ä¸‹åˆ›å»ºä»»åŠ¡
 	xReturn =  xTaskCreate(	(TaskFunction_t) AppTaskCreate,
 													(char *) "AppTaskCreate",
 													(uint16_t) 512,
@@ -173,19 +173,19 @@ int main(void)
 													(UBaseType_t) 2,
 													(TaskHandle_t *)&AppTaskCreate_Handle );
 	if(pdPASS == xReturn)
-	//ÆôÓÃµ÷¶ÈÆ÷
+	//å¯ç”¨è°ƒåº¦å™¨
 		vTaskStartScheduler();
 	
 	while(1)
 	{
-		printf("ERROR:µ÷¶ÈÆ÷Î´ÆôÓÃ³É¹¦£¡\n");
+		printf("ERROR:è°ƒåº¦å™¨æœªå¯ç”¨æˆåŠŸï¼\n");
 	};
 }
 
 
 static void Hardware_Init(void)
 {
-	/* ×¢Òâ£¬ÔÚFreeRTOSÏÂ£¬¾ù²ÉÓÃµÚËÄ¸ö·Ö×é£¬ÉèÖÃÒ»´Î¼´¿É */
+	/* æ³¨æ„ï¼Œåœ¨FreeRTOSä¸‹ï¼Œå‡é‡‡ç”¨ç¬¬å››ä¸ªåˆ†ç»„ï¼Œè®¾ç½®ä¸€æ¬¡å³å¯ */
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 	
 	LED_GPIO_Config();
@@ -197,9 +197,9 @@ static void AppTaskCreate(void)
 {
 	BaseType_t xReturn = pdPASS;
 	
-  taskENTER_CRITICAL();           //½øÈëÁÙ½ç
+  taskENTER_CRITICAL();           //è¿›å…¥ä¸´ç•Œ
 	
-	//ÈÎÎñ1
+	//ä»»åŠ¡1
 	xReturn = xTaskCreate(	(TaskFunction_t) LED1_Task,
 													(char *) "LED1_Task",
 													(uint16_t) 512,
@@ -207,11 +207,11 @@ static void AppTaskCreate(void)
 													(UBaseType_t) 3,
 													(TaskHandle_t *)&LED1_Task_Handle );
 	if(pdPASS == xReturn)
-		printf("LED1_Task´´½¨³É¹¦£¡ \n");
+		printf("LED1_Taskåˆ›å»ºæˆåŠŸï¼ \n");
 	else
-		printf("LED1_Task´´½¨Ê§°Ü...\n");
+		printf("LED1_Taskåˆ›å»ºå¤±è´¥...\n");
 	
-	//ÈÎÎñ2
+	//ä»»åŠ¡2
 	xReturn = xTaskCreate(	(TaskFunction_t) LED2_Task,
 													(char *) "LED2_Task",
 													(uint16_t) 512,
@@ -219,14 +219,14 @@ static void AppTaskCreate(void)
 													(UBaseType_t) 2,
 													(TaskHandle_t *)&LED2_Task_Handle );
 	if(pdPASS == xReturn)
-		printf("LED2_Task´´½¨³É¹¦£¡ \n");
+		printf("LED2_Taskåˆ›å»ºæˆåŠŸï¼ \n");
 	else
-		printf("LED2_Task´´½¨Ê§°Ü...\n");
+		printf("LED2_Taskåˆ›å»ºå¤±è´¥...\n");
 	
 
 	vTaskDelete(AppTaskCreate_Handle);
 
-  taskEXIT_CRITICAL();            //ÍË³öÁÙ½çÇø
+  taskEXIT_CRITICAL();            //é€€å‡ºä¸´ç•ŒåŒº
 }
 
 static void LED1_Task(void* pvParameters)
@@ -258,24 +258,24 @@ static void LED2_Task(void* pvParameters)
 }
 
 #elif 0
-//ÊµÑé3£ºÀûÓÃ¾ø¶ÔÑÓÊ±´´½¨¶àÈÎÎñ ( ÔÚFreeRTOSConfig.hÖĞĞèÒª½«configSUPPORT_STATIC_ALLOCATIONÖÃ0 ) 
+//å®éªŒ3ï¼šåˆ©ç”¨ç»å¯¹å»¶æ—¶åˆ›å»ºå¤šä»»åŠ¡ ( åœ¨FreeRTOSConfig.hä¸­éœ€è¦å°†configSUPPORT_STATIC_ALLOCATIONç½®0 ) 
 
 //FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
-//Ó²¼ş
+//ç¡¬ä»¶
 #include "bsp_led.h"
 #include "bsp_usart.h"
 #include "bsp_key.h"
 
-//Ê¹ÓÃµ½µÄÈÎÎñ¾ä±ú
-//ÔÚ¶¯Ì¬ÄÚ´æÏÂ£¬Ö»ĞèÒª´´½¨ÈÎÎñµÄÈÎÎñ¾ä±ú¼´¿É£¬Õ»¡¢tcb²»Ğè´´½¨
+//ä½¿ç”¨åˆ°çš„ä»»åŠ¡å¥æŸ„
+//åœ¨åŠ¨æ€å†…å­˜ä¸‹ï¼Œåªéœ€è¦åˆ›å»ºä»»åŠ¡çš„ä»»åŠ¡å¥æŸ„å³å¯ï¼Œæ ˆã€tcbä¸éœ€åˆ›å»º
 static TaskHandle_t LED_Task_Handle;	
 static TaskHandle_t KEY_Task_Handle;	
 static TaskHandle_t AppTaskCreate_Handle;
 
 
-/**********  º¯ÊıÉùÃ÷ **********/
+/**********  å‡½æ•°å£°æ˜ **********/
 static void Hardware_Init(void);
 static void AppTaskCreate(void);
 static void LED_Task(void* pvParameters);
@@ -285,14 +285,14 @@ static void KEY_Task(void* pvParameters);
 int main(void)
 {	
 	BaseType_t xReturn = pdPASS;
-	//Ó²¼ş³õÊ¼»¯
+	//ç¡¬ä»¶åˆå§‹åŒ–
   Hardware_Init();
 	
-	//ÄÚ´æµÄ³õÊ¼»¯RTOS×Ô¶¯°ïÖú³õÊ¼»¯£¬ÎŞĞèÓÃ»§×Ô¼ºÅäÖÃ£¬Èô»»ÁËRTT liteos ĞèÒªÓÃ»§ÅäÖÃ
+	//å†…å­˜çš„åˆå§‹åŒ–RTOSè‡ªåŠ¨å¸®åŠ©åˆå§‹åŒ–ï¼Œæ— éœ€ç”¨æˆ·è‡ªå·±é…ç½®ï¼Œè‹¥æ¢äº†RTT liteos éœ€è¦ç”¨æˆ·é…ç½®
 	
-	printf("ÕâÊÇÒ»¸öSTM32_FreeRTOS_¾ø¶ÔÑÓÊ±+°´¼ü¹ÒÆğºÍ»Ö¸´ÈÎÎñµÄÊµÑé£¡\n");
+	printf("è¿™æ˜¯ä¸€ä¸ªSTM32_FreeRTOS_ç»å¯¹å»¶æ—¶+æŒ‰é”®æŒ‚èµ·å’Œæ¢å¤ä»»åŠ¡çš„å®éªŒï¼\n");
 	
-	//¶¯Ì¬ÄÚ´æÏÂ´´½¨ÈÎÎñ
+	//åŠ¨æ€å†…å­˜ä¸‹åˆ›å»ºä»»åŠ¡
 	xReturn =  xTaskCreate(	(TaskFunction_t) AppTaskCreate,
 													(char *) "AppTaskCreate",
 													(uint16_t) 512,
@@ -300,19 +300,19 @@ int main(void)
 													(UBaseType_t) 2,
 													(TaskHandle_t *)&AppTaskCreate_Handle );
 	if(pdPASS == xReturn)
-	//ÆôÓÃµ÷¶ÈÆ÷
+	//å¯ç”¨è°ƒåº¦å™¨
 		vTaskStartScheduler();
 	
 	while(1)
 	{
-		printf("ERROR:µ÷¶ÈÆ÷Î´ÆôÓÃ³É¹¦£¡\n");
+		printf("ERROR:è°ƒåº¦å™¨æœªå¯ç”¨æˆåŠŸï¼\n");
 	};
 }
 
 
 static void Hardware_Init(void)
 {
-	/* ×¢Òâ£¬ÔÚFreeRTOSÏÂ£¬¾ù²ÉÓÃµÚËÄ¸ö·Ö×é£¬ÉèÖÃÒ»´Î¼´¿É */
+	/* æ³¨æ„ï¼Œåœ¨FreeRTOSä¸‹ï¼Œå‡é‡‡ç”¨ç¬¬å››ä¸ªåˆ†ç»„ï¼Œè®¾ç½®ä¸€æ¬¡å³å¯ */
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 	
 	LED_GPIO_Config();
@@ -326,9 +326,9 @@ static void AppTaskCreate(void)
 {
 	BaseType_t xReturn = pdPASS;
 	
-  taskENTER_CRITICAL();           //½øÈëÁÙ½ç
+  taskENTER_CRITICAL();           //è¿›å…¥ä¸´ç•Œ
 	
-	//ÈÎÎñ1
+	//ä»»åŠ¡1
 	xReturn = xTaskCreate(	(TaskFunction_t) LED_Task,
 													(char *) "LED_Task",
 													(uint16_t) 512,
@@ -336,11 +336,11 @@ static void AppTaskCreate(void)
 													(UBaseType_t) 2,
 													(TaskHandle_t *)&LED_Task_Handle );
 	if(pdPASS == xReturn)
-		printf("LED_Task´´½¨³É¹¦£¡ \n");
+		printf("LED_Taskåˆ›å»ºæˆåŠŸï¼ \n");
 	else
-		printf("LED_Task´´½¨Ê§°Ü...\n");
+		printf("LED_Taskåˆ›å»ºå¤±è´¥...\n");
 	
-	//ÈÎÎñ2
+	//ä»»åŠ¡2
 	xReturn = xTaskCreate(	(TaskFunction_t) KEY_Task,
 													(char *) "KEY_Task",
 													(uint16_t) 512,
@@ -350,13 +350,13 @@ static void AppTaskCreate(void)
 
 	vTaskDelete(AppTaskCreate_Handle);
 
-  taskEXIT_CRITICAL();            //ÍË³öÁÙ½çÇø
+  taskEXIT_CRITICAL();            //é€€å‡ºä¸´ç•ŒåŒº
 }
 
 static void LED_Task(void* pvParameters)
 {
 	TickType_t pxPreviousWakeTime = xTaskGetTickCount();
-	//½«Ê±¼ä×ª»»³ÉtickÊı
+	//å°†æ—¶é—´è½¬æ¢æˆtickæ•°
 	TickType_t xTimeIncrement = pdMS_TO_TICKS(1000);
 	while(1)
 	{		
@@ -378,31 +378,31 @@ static void KEY_Task(void* pvParameters)
 		if(KEY_ON == Key_Scan(KEY1_GPIO_PORT,KEY1_GPIO_PIN))
 		{
 			vTaskSuspend(LED_Task_Handle);
-			printf("\r\nLED_TaskÒÑ¾­±»¹ÒÆğ£¡ \r\n");
+			printf("\r\nLED_Taskå·²ç»è¢«æŒ‚èµ·ï¼ \r\n");
 		}
 		if(KEY_ON == Key_Scan(KEY2_GPIO_PORT,KEY2_GPIO_PIN))
 		{
 			vTaskResume(LED_Task_Handle);
-			printf("\r\nLED_TaskÒÑ¾­±»»Ö¸´£¡ \r\n");
+			printf("\r\nLED_Taskå·²ç»è¢«æ¢å¤ï¼ \r\n");
 		}
 		vTaskDelay(20);
 	}
 }
 
 #elif 0
-//ÊµÑéËÄ£ºÏûÏ¢¶ÓÁĞÊÕ·¢µÄÊÕ·¢ÊµÑé
+//å®éªŒå››ï¼šæ¶ˆæ¯é˜Ÿåˆ—æ”¶å‘çš„æ”¶å‘å®éªŒ
 
 //FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
-//Ó²¼ş
+//ç¡¬ä»¶
 #include "bsp_led.h"
 #include "bsp_usart.h"
 #include "bsp_key.h"
 
-//Ê¹ÓÃµ½µÄÈÎÎñ¾ä±ú
-//ÔÚ¶¯Ì¬ÄÚ´æÏÂ£¬Ö»ĞèÒª´´½¨ÈÎÎñµÄÈÎÎñ¾ä±ú¼´¿É£¬Õ»¡¢tcb²»Ğè´´½¨
+//ä½¿ç”¨åˆ°çš„ä»»åŠ¡å¥æŸ„
+//åœ¨åŠ¨æ€å†…å­˜ä¸‹ï¼Œåªéœ€è¦åˆ›å»ºä»»åŠ¡çš„ä»»åŠ¡å¥æŸ„å³å¯ï¼Œæ ˆã€tcbä¸éœ€åˆ›å»º
 static TaskHandle_t AppTaskCreate_Handle;
 static QueueHandle_t QUEUE_Task_Handle;
 static TaskHandle_t Send_Task_Handle;	
@@ -411,7 +411,7 @@ static TaskHandle_t Receive_Task_Handle;
 #define uxQueueLength   4 
 #define uxItemSize  		4
 
-/**********  º¯ÊıÉùÃ÷ **********/
+/**********  å‡½æ•°å£°æ˜ **********/
 static void Hardware_Init(void);
 static void AppTaskCreate(void);
 static void Receive_Task(void* pvParameters);
@@ -420,14 +420,14 @@ static void Send_Task(void* pvParameters);
 int main(void)
 {	
 	BaseType_t xReturn = pdPASS;
-	//Ó²¼ş³õÊ¼»¯
+	//ç¡¬ä»¶åˆå§‹åŒ–
   Hardware_Init();
 	
-	//ÄÚ´æµÄ³õÊ¼»¯RTOS×Ô¶¯°ïÖú³õÊ¼»¯£¬ÎŞĞèÓÃ»§×Ô¼ºÅäÖÃ£¬Èô»»ÁËRTT liteos ĞèÒªÓÃ»§ÅäÖÃ
+	//å†…å­˜çš„åˆå§‹åŒ–RTOSè‡ªåŠ¨å¸®åŠ©åˆå§‹åŒ–ï¼Œæ— éœ€ç”¨æˆ·è‡ªå·±é…ç½®ï¼Œè‹¥æ¢äº†RTT liteos éœ€è¦ç”¨æˆ·é…ç½®
 	
-	printf("ÕâÊÇÒ»¸öSTM32_FreeRTOS_ÏûÏ¢¶ÓÁĞ·¢ÊÕĞÅÏ¢µÄÊµÑé£¡\n");
+	printf("è¿™æ˜¯ä¸€ä¸ªSTM32_FreeRTOS_æ¶ˆæ¯é˜Ÿåˆ—å‘æ”¶ä¿¡æ¯çš„å®éªŒï¼\n");
 	
-	//¶¯Ì¬ÄÚ´æÏÂ´´½¨ÈÎÎñ
+	//åŠ¨æ€å†…å­˜ä¸‹åˆ›å»ºä»»åŠ¡
 	xReturn =  xTaskCreate(	(TaskFunction_t) AppTaskCreate,
 													(char *) "AppTaskCreate",
 													(uint16_t) 512,
@@ -435,19 +435,19 @@ int main(void)
 													(UBaseType_t) 2,
 													(TaskHandle_t *)&AppTaskCreate_Handle );
 	if(pdPASS == xReturn)
-	//ÆôÓÃµ÷¶ÈÆ÷
+	//å¯ç”¨è°ƒåº¦å™¨
 		vTaskStartScheduler();
 	
 	while(1)
 	{
-		printf("ERROR:µ÷¶ÈÆ÷Î´ÆôÓÃ³É¹¦£¡\n");
+		printf("ERROR:è°ƒåº¦å™¨æœªå¯ç”¨æˆåŠŸï¼\n");
 	};
 }
 
 
 static void Hardware_Init(void)
 {
-	/* ×¢Òâ£¬ÔÚFreeRTOSÏÂ£¬¾ù²ÉÓÃµÚËÄ¸ö·Ö×é£¬ÉèÖÃÒ»´Î¼´¿É */
+	/* æ³¨æ„ï¼Œåœ¨FreeRTOSä¸‹ï¼Œå‡é‡‡ç”¨ç¬¬å››ä¸ªåˆ†ç»„ï¼Œè®¾ç½®ä¸€æ¬¡å³å¯ */
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 	
 	LED_GPIO_Config();
@@ -462,14 +462,14 @@ static void AppTaskCreate(void)
 	
 	BaseType_t xReturn = pdPASS;
 	
-  taskENTER_CRITICAL();           //½øÈëÁÙ½ç
+  taskENTER_CRITICAL();           //è¿›å…¥ä¸´ç•Œ
 	
-	//´´½¨ÏûÏ¢¶ÓÁĞ
+	//åˆ›å»ºæ¶ˆæ¯é˜Ÿåˆ—
 	QUEUE_Task_Handle = xQueueCreate(uxQueueLength,uxItemSize);
 	if(NULL != QUEUE_Task_Handle)
-		printf("\r\nÏûÏ¢¶ÓÁĞ´´½¨³É¹¦£¡\r\n");
+		printf("\r\næ¶ˆæ¯é˜Ÿåˆ—åˆ›å»ºæˆåŠŸï¼\r\n");
 	
-	//·¢ËÍÈÎÎñ´´½¨
+	//å‘é€ä»»åŠ¡åˆ›å»º
 	xReturn = xTaskCreate(	(TaskFunction_t) Send_Task,
 													(char *) "Send_Task",
 													(uint16_t) 512,
@@ -477,11 +477,11 @@ static void AppTaskCreate(void)
 													(UBaseType_t) 3,
 													(TaskHandle_t *)&Send_Task_Handle );
 	if(pdPASS == xReturn)
-		printf("Send_Task´´½¨³É¹¦£¡ \n");
+		printf("Send_Taskåˆ›å»ºæˆåŠŸï¼ \n");
 	else
-		printf("Send_Task´´½¨Ê§°Ü...\n");
+		printf("Send_Taskåˆ›å»ºå¤±è´¥...\n");
 	
-	//½ÓÊÕÈÎÎñ´´½¨
+	//æ¥æ”¶ä»»åŠ¡åˆ›å»º
 	xReturn = xTaskCreate(	(TaskFunction_t) Receive_Task,
 													(char *) "Receive_Task",
 													(uint16_t) 512,
@@ -489,13 +489,13 @@ static void AppTaskCreate(void)
 													(UBaseType_t) 2,
 													(TaskHandle_t *)&Receive_Task_Handle );
 	if(pdPASS == xReturn)
-		printf("Receive_Task´´½¨³É¹¦£¡ \n");
+		printf("Receive_Taskåˆ›å»ºæˆåŠŸï¼ \n");
 	else
-		printf("Receive_Task´´½¨Ê§°Ü...\n");
+		printf("Receive_Taskåˆ›å»ºå¤±è´¥...\n");
 	
 	vTaskDelete(AppTaskCreate_Handle);
 
-  taskEXIT_CRITICAL();            //ÍË³öÁÙ½çÇø
+  taskEXIT_CRITICAL();            //é€€å‡ºä¸´ç•ŒåŒº
 }
 
 
@@ -510,20 +510,20 @@ static void Send_Task(void* pvParameters)
 		{
 			xReturn = xQueueSend(QUEUE_Task_Handle,&Send_data1,0);
 			if(pdPASS == xReturn )
-			printf("\r\nData1ĞÅÏ¢ÒÑ±»·¢ËÍ£¡ \r\n");
+			printf("\r\nData1ä¿¡æ¯å·²è¢«å‘é€ï¼ \r\n");
 		}
 		if(KEY_ON == Key_Scan(KEY2_GPIO_PORT,KEY2_GPIO_PIN))
 		{
 			xQueueSend(QUEUE_Task_Handle,&Send_data2,0);
 			if(pdPASS == xReturn )
-			printf("\r\nData2ĞÅÏ¢ÒÑ±»·¢ËÍ£¡ \r\n");
+			printf("\r\nData2ä¿¡æ¯å·²è¢«å‘é€ï¼ \r\n");
 		}
 		vTaskDelay(20);
 	}
 }
 
-//ÈÎÎñ¶¼ĞèÒª½øÈë×èÈûÌ¬£¬ÎªÊ²Ã´´Ë´¦Ã»ÓĞvTaskDelay?
-//ÒòÎª½ÓÊÕ¶ÓÁĞÏûÏ¢µÄÊ±ºòÈç¹û½ÓÊÕ²»µ½£¬¾Í»á½øÈëÓÃ»§Éè¶¨µÄ×èÈûÌ¬£¬´Ë´¦ÉèÖÃµÄportMAX_DELAY£¬32Î»×î´óÖµ
+//ä»»åŠ¡éƒ½éœ€è¦è¿›å…¥é˜»å¡æ€ï¼Œä¸ºä»€ä¹ˆæ­¤å¤„æ²¡æœ‰vTaskDelay?
+//å› ä¸ºæ¥æ”¶é˜Ÿåˆ—æ¶ˆæ¯çš„æ—¶å€™å¦‚æœæ¥æ”¶ä¸åˆ°ï¼Œå°±ä¼šè¿›å…¥ç”¨æˆ·è®¾å®šçš„é˜»å¡æ€ï¼Œæ­¤å¤„è®¾ç½®çš„portMAX_DELAYï¼Œ32ä½æœ€å¤§å€¼
 static void Receive_Task(void* pvParameters)
 {
 	BaseType_t xReturn ;
@@ -532,41 +532,41 @@ static void Receive_Task(void* pvParameters)
 	{
 		xReturn = xQueueReceive(QUEUE_Task_Handle,&Read_Queue,portMAX_DELAY);
 		if(pdTRUE == xReturn)
-		{printf("\r\n½ÓÊÕµ½µÄĞÅÏ¢Îª£º%d\r\n",Read_Queue);
+		{printf("\r\næ¥æ”¶åˆ°çš„ä¿¡æ¯ä¸ºï¼š%d\r\n",Read_Queue);
 			if(Read_Queue == 1)
 				LED1_TOGGLE;
 			if(Read_Queue == 2 )
 				LED2_TOGGLE;
 		}
 		else 
-			printf("\r\nERROR:½ÓÊÕµ½µÄÊı¾İ³ö´í...\r\n");
+			printf("\r\nERROR:æ¥æ”¶åˆ°çš„æ•°æ®å‡ºé”™...\r\n");
 	}
 }
 
 
 
 #elif 0
-//ÊµÑéÎå£º¶şÖµĞÅºÅÁ¿µÄÍ¬²½ÊµÑé
+//å®éªŒäº”ï¼šäºŒå€¼ä¿¡å·é‡çš„åŒæ­¥å®éªŒ
 
 //FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-//Ó²¼ş
+//ç¡¬ä»¶
 #include "bsp_led.h"
 #include "bsp_usart.h"
 #include "bsp_key.h"
 
-//Ê¹ÓÃµ½µÄÈÎÎñ¾ä±ú
-//ÔÚ¶¯Ì¬ÄÚ´æÏÂ£¬Ö»ĞèÒª´´½¨ÈÎÎñµÄÈÎÎñ¾ä±ú¼´¿É£¬Õ»¡¢tcb²»Ğè´´½¨
+//ä½¿ç”¨åˆ°çš„ä»»åŠ¡å¥æŸ„
+//åœ¨åŠ¨æ€å†…å­˜ä¸‹ï¼Œåªéœ€è¦åˆ›å»ºä»»åŠ¡çš„ä»»åŠ¡å¥æŸ„å³å¯ï¼Œæ ˆã€tcbä¸éœ€åˆ›å»º
 static TaskHandle_t AppTaskCreate_Handle;
 static TaskHandle_t Send_Task_Handle;	
 static TaskHandle_t Receive_Task_Handle;	
 static SemaphoreHandle_t BinarySem_Handle;
 
 
-/**********  º¯ÊıÉùÃ÷ **********/
+/**********  å‡½æ•°å£°æ˜ **********/
 static void Hardware_Init(void);
 static void AppTaskCreate(void);
 static void Receive_Task(void* pvParameters);
@@ -575,14 +575,14 @@ static void Send_Task(void* pvParameters);
 int main(void)
 {	
 	BaseType_t xReturn = pdPASS;
-	//Ó²¼ş³õÊ¼»¯
+	//ç¡¬ä»¶åˆå§‹åŒ–
   Hardware_Init();
 	
-	//ÄÚ´æµÄ³õÊ¼»¯RTOS×Ô¶¯°ïÖú³õÊ¼»¯£¬ÎŞĞèÓÃ»§×Ô¼ºÅäÖÃ£¬Èô»»ÁËRTT liteos ĞèÒªÓÃ»§ÅäÖÃ
+	//å†…å­˜çš„åˆå§‹åŒ–RTOSè‡ªåŠ¨å¸®åŠ©åˆå§‹åŒ–ï¼Œæ— éœ€ç”¨æˆ·è‡ªå·±é…ç½®ï¼Œè‹¥æ¢äº†RTT liteos éœ€è¦ç”¨æˆ·é…ç½®
 	
-	printf("ÕâÊÇÒ»¸öSTM32_FreeRTOS_ÏûÏ¢¶ÓÁĞ·¢ÊÕĞÅÏ¢µÄÊµÑé£¡\n");
+	printf("è¿™æ˜¯ä¸€ä¸ªSTM32_FreeRTOS_æ¶ˆæ¯é˜Ÿåˆ—å‘æ”¶ä¿¡æ¯çš„å®éªŒï¼\n");
 	
-	//¶¯Ì¬ÄÚ´æÏÂ´´½¨ÈÎÎñ
+	//åŠ¨æ€å†…å­˜ä¸‹åˆ›å»ºä»»åŠ¡
 	xReturn =  xTaskCreate(	(TaskFunction_t) AppTaskCreate,
 													(char *) "AppTaskCreate",
 													(uint16_t) 512,
@@ -590,12 +590,12 @@ int main(void)
 													(UBaseType_t) 2,
 													(TaskHandle_t *)&AppTaskCreate_Handle );
 	if(pdPASS == xReturn)
-	//ÆôÓÃµ÷¶ÈÆ÷
+	//å¯ç”¨è°ƒåº¦å™¨
 		vTaskStartScheduler();
 	
 	while(1)
 	{
-		printf("ERROR:µ÷¶ÈÆ÷Î´ÆôÓÃ³É¹¦£¡\n");
+		printf("ERROR:è°ƒåº¦å™¨æœªå¯ç”¨æˆåŠŸï¼\n");
 	};
 }
 
@@ -606,14 +606,14 @@ static void AppTaskCreate(void)
 	
 	BaseType_t xReturn = pdPASS;
 	
-  taskENTER_CRITICAL();           //½øÈëÁÙ½ç
+  taskENTER_CRITICAL();           //è¿›å…¥ä¸´ç•Œ
 	
-	//´´½¨¶şÖµĞÅºÅÁ¿
+	//åˆ›å»ºäºŒå€¼ä¿¡å·é‡
 	BinarySem_Handle = xSemaphoreCreateBinary();
 	if(NULL != BinarySem_Handle)
-		printf("\r\n¶şÖµĞÅºÅÁ¿´´½¨³É¹¦£¡\r\n");
+		printf("\r\näºŒå€¼ä¿¡å·é‡åˆ›å»ºæˆåŠŸï¼\r\n");
 	
-	//·¢ËÍÈÎÎñ´´½¨
+	//å‘é€ä»»åŠ¡åˆ›å»º
 	xReturn = xTaskCreate(	(TaskFunction_t) Send_Task,
 													(char *) "Send_Task",
 													(uint16_t) 512,
@@ -621,11 +621,11 @@ static void AppTaskCreate(void)
 													(UBaseType_t) 3,
 													(TaskHandle_t *)&Send_Task_Handle );
 	if(pdPASS == xReturn)
-		printf("Send_Task´´½¨³É¹¦£¡ \n");
+		printf("Send_Taskåˆ›å»ºæˆåŠŸï¼ \n");
 	else
-		printf("Send_Task´´½¨Ê§°Ü...\n");
+		printf("Send_Taskåˆ›å»ºå¤±è´¥...\n");
 	
-	//½ÓÊÕÈÎÎñ´´½¨
+	//æ¥æ”¶ä»»åŠ¡åˆ›å»º
 	xReturn = xTaskCreate(	(TaskFunction_t) Receive_Task,
 													(char *) "Receive_Task",
 													(uint16_t) 512,
@@ -633,13 +633,13 @@ static void AppTaskCreate(void)
 													(UBaseType_t) 2,
 													(TaskHandle_t *)&Receive_Task_Handle );
 	if(pdPASS == xReturn)
-		printf("Receive_Task´´½¨³É¹¦£¡ \n");
+		printf("Receive_Taskåˆ›å»ºæˆåŠŸï¼ \n");
 	else
-		printf("Receive_Task´´½¨Ê§°Ü...\n");
+		printf("Receive_Taskåˆ›å»ºå¤±è´¥...\n");
 	
 	vTaskDelete(AppTaskCreate_Handle);
 
-  taskEXIT_CRITICAL();            //ÍË³öÁÙ½çÇø
+  taskEXIT_CRITICAL();            //é€€å‡ºä¸´ç•ŒåŒº
 }
 
 
@@ -652,17 +652,17 @@ static void Send_Task(void* pvParameters)
 		{
 			xReturn = xSemaphoreGive(BinarySem_Handle);
 			if(pdPASS == xReturn )
-				printf("\r\n¶şÖµĞÅºÅÁ¿ÒÑ±»ÊÍ·Å£¡ \r\n");
+				printf("\r\näºŒå€¼ä¿¡å·é‡å·²è¢«é‡Šæ”¾ï¼ \r\n");
 			else
-				printf("\r\n¶şÖµĞÅºÅÁ¿ÊÍ·ÅÊ§°Ü\r\n");
+				printf("\r\näºŒå€¼ä¿¡å·é‡é‡Šæ”¾å¤±è´¥\r\n");
 		}
 		if(KEY_ON == Key_Scan(KEY2_GPIO_PORT,KEY2_GPIO_PIN))
 		{
 			xReturn = xSemaphoreGive(BinarySem_Handle);
 			if(pdPASS == xReturn )
-				printf("\r\n¶şÖµĞÅºÅÁ¿ÒÑ±»ÊÍ·Å£¡ \r\n");
+				printf("\r\näºŒå€¼ä¿¡å·é‡å·²è¢«é‡Šæ”¾ï¼ \r\n");
 			else
-				printf("\r\n¶şÖµĞÅºÅÁ¿ÊÍ·ÅÊ§°Ü\r\n");
+				printf("\r\näºŒå€¼ä¿¡å·é‡é‡Šæ”¾å¤±è´¥\r\n");
 		}
 		vTaskDelay(20);
 	}
@@ -674,19 +674,19 @@ static void Receive_Task(void* pvParameters)
 	BaseType_t xReturn ;
 	while(1) 
 	{
-		//½ÓÊÕ²»µ½Ê±£¬½øÈë×èÈû×´Ì¬µÈ´ı
+		//æ¥æ”¶ä¸åˆ°æ—¶ï¼Œè¿›å…¥é˜»å¡çŠ¶æ€ç­‰å¾…
 		xReturn = xSemaphoreTake(BinarySem_Handle,portMAX_DELAY);
 		if(pdTRUE == xReturn)
-			printf("\r\n¶şÖµĞÅºÅÁ¿ÒÑ±»½ÓÊÕ£¡\r\n");
+			printf("\r\näºŒå€¼ä¿¡å·é‡å·²è¢«æ¥æ”¶ï¼\r\n");
 		else	
-			printf("\r\n¶şÖµĞÅºÅÁ¿½ÓÊÕÊ§°Ü£¡\r\n");
+			printf("\r\näºŒå€¼ä¿¡å·é‡æ¥æ”¶å¤±è´¥ï¼\r\n");
 		}
 }
 
 
 static void Hardware_Init(void)
 {
-	/* ×¢Òâ£¬ÔÚFreeRTOSÏÂ£¬¾ù²ÉÓÃµÚËÄ¸ö·Ö×é£¬ÉèÖÃÒ»´Î¼´¿É */
+	/* æ³¨æ„ï¼Œåœ¨FreeRTOSä¸‹ï¼Œå‡é‡‡ç”¨ç¬¬å››ä¸ªåˆ†ç»„ï¼Œè®¾ç½®ä¸€æ¬¡å³å¯ */
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 	
 	LED_GPIO_Config();
@@ -697,28 +697,28 @@ static void Hardware_Init(void)
 }
 
 
-#elif 1
+#elif 0
 
-//ÊµÑéÁù£º¼ÆÊıĞÅºÅÁ¿ÊµÑé(ĞèÒª½«QUEUE.cÖĞµÄconfigUSE_COUNTING_SEMAPHORESºê¶¨ÒåÉèÖÃÎª1)
+//å®éªŒå…­ï¼šè®¡æ•°ä¿¡å·é‡å®éªŒ(éœ€è¦å°†QUEUE.cä¸­çš„configUSE_COUNTING_SEMAPHORESå®å®šä¹‰è®¾ç½®ä¸º1)
 
 //FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-//Ó²¼ş
+//ç¡¬ä»¶
 #include "bsp_led.h"
 #include "bsp_usart.h"
 #include "bsp_key.h"
 
-//Ê¹ÓÃµ½µÄÈÎÎñ¾ä±ú
+//ä½¿ç”¨åˆ°çš„ä»»åŠ¡å¥æŸ„
 static TaskHandle_t AppTaskCreate_Handle;
 static TaskHandle_t Send_Task_Handle;	
 static TaskHandle_t Receive_Task_Handle;	
 static SemaphoreHandle_t CountSem_Handle;
 
 
-/**********  º¯ÊıÉùÃ÷ **********/
+/**********  å‡½æ•°å£°æ˜ **********/
 static void Hardware_Init(void);
 static void AppTaskCreate(void);
 static void Receive_Task(void* pvParameters);
@@ -727,14 +727,14 @@ static void Send_Task(void* pvParameters);
 int main(void)
 {	
 	BaseType_t xReturn = pdPASS;
-	//Ó²¼ş³õÊ¼»¯
+	//ç¡¬ä»¶åˆå§‹åŒ–
   Hardware_Init();
 	
-	//ÄÚ´æµÄ³õÊ¼»¯RTOS×Ô¶¯°ïÖú³õÊ¼»¯£¬ÎŞĞèÓÃ»§×Ô¼ºÅäÖÃ£¬Èô»»ÁËRTT liteos ĞèÒªÓÃ»§ÅäÖÃ
+	//å†…å­˜çš„åˆå§‹åŒ–RTOSè‡ªåŠ¨å¸®åŠ©åˆå§‹åŒ–ï¼Œæ— éœ€ç”¨æˆ·è‡ªå·±é…ç½®ï¼Œè‹¥æ¢äº†RTT liteos éœ€è¦ç”¨æˆ·é…ç½®
 	
-	printf("ÕâÊÇÒ»¸öSTM32_FreeRTOS_ÏûÏ¢¶ÓÁĞ·¢ÊÕĞÅÏ¢µÄÊµÑé£¡\n");
+	printf("è¿™æ˜¯ä¸€ä¸ªSTM32_FreeRTOS_æ¶ˆæ¯é˜Ÿåˆ—å‘æ”¶ä¿¡æ¯çš„å®éªŒï¼\n");
 	
-	//¶¯Ì¬ÄÚ´æÏÂ´´½¨ÈÎÎñ
+	//åŠ¨æ€å†…å­˜ä¸‹åˆ›å»ºä»»åŠ¡
 	xReturn =  xTaskCreate(	(TaskFunction_t) AppTaskCreate,
 													(char *) "AppTaskCreate",
 													(uint16_t) 512,
@@ -742,12 +742,12 @@ int main(void)
 													(UBaseType_t) 2,
 													(TaskHandle_t *)&AppTaskCreate_Handle );
 	if(pdPASS == xReturn)
-	//ÆôÓÃµ÷¶ÈÆ÷
+	//å¯ç”¨è°ƒåº¦å™¨
 		vTaskStartScheduler();
 	
 	while(1)
 	{
-		printf("ERROR:µ÷¶ÈÆ÷Î´ÆôÓÃ³É¹¦£¡\n");
+		printf("ERROR:è°ƒåº¦å™¨æœªå¯ç”¨æˆåŠŸï¼\n");
 	};
 }
 
@@ -758,14 +758,14 @@ static void AppTaskCreate(void)
 	
 	BaseType_t xReturn = pdPASS;
 	
-  taskENTER_CRITICAL();           //½øÈëÁÙ½ç
+  taskENTER_CRITICAL();           //è¿›å…¥ä¸´ç•Œ
 	
-	//´´½¨¼ÆÊıĞÅºÅÁ¿
+	//åˆ›å»ºè®¡æ•°ä¿¡å·é‡
 	CountSem_Handle = xSemaphoreCreateCounting(5,5);
 	if(NULL != CountSem_Handle)
-		printf("\r\n¼ÆÊıĞÅºÅÁ¿´´½¨³É¹¦£¡\r\n");
+		printf("\r\nè®¡æ•°ä¿¡å·é‡åˆ›å»ºæˆåŠŸï¼\r\n");
 	
-	//·¢ËÍÈÎÎñ´´½¨
+	//å‘é€ä»»åŠ¡åˆ›å»º
 	xReturn = xTaskCreate(	(TaskFunction_t) Send_Task,
 													(char *) "Send_Task",
 													(uint16_t) 512,
@@ -773,11 +773,11 @@ static void AppTaskCreate(void)
 													(UBaseType_t) 3,
 													(TaskHandle_t *)&Send_Task_Handle );
 	if(pdPASS == xReturn)
-		printf("Send_Task´´½¨³É¹¦£¡ \n");
+		printf("Send_Taskåˆ›å»ºæˆåŠŸï¼ \n");
 	else
-		printf("Send_Task´´½¨Ê§°Ü...\n");
+		printf("Send_Taskåˆ›å»ºå¤±è´¥...\n");
 	
-	//½ÓÊÕÈÎÎñ´´½¨
+	//æ¥æ”¶ä»»åŠ¡åˆ›å»º
 	xReturn = xTaskCreate(	(TaskFunction_t) Receive_Task,
 													(char *) "Receive_Task",
 													(uint16_t) 512,
@@ -785,13 +785,13 @@ static void AppTaskCreate(void)
 													(UBaseType_t) 2,
 													(TaskHandle_t *)&Receive_Task_Handle );
 	if(pdPASS == xReturn)
-		printf("Receive_Task´´½¨³É¹¦£¡ \n");
+		printf("Receive_Taskåˆ›å»ºæˆåŠŸï¼ \n");
 	else
-		printf("Receive_Task´´½¨Ê§°Ü...\n");
+		printf("Receive_Taskåˆ›å»ºå¤±è´¥...\n");
 	
 	vTaskDelete(AppTaskCreate_Handle);
 
-  taskEXIT_CRITICAL();            //ÍË³öÁÙ½çÇø
+  taskEXIT_CRITICAL();            //é€€å‡ºä¸´ç•ŒåŒº
 }
 
 
@@ -803,12 +803,12 @@ static void Send_Task(void* pvParameters)
 
 		if(KEY_ON == Key_Scan(KEY2_GPIO_PORT,KEY2_GPIO_PIN))
 		{
-			//°´¼ü2°´ÏÂÊ±£¬ÊÍ·ÅÒ»¸ö³µÎ»¡£
+			//æŒ‰é”®2æŒ‰ä¸‹æ—¶ï¼Œé‡Šæ”¾ä¸€ä¸ªè½¦ä½ã€‚
 			xReturn = xSemaphoreGive(CountSem_Handle);
 			if(pdPASS == xReturn )
-				printf("\r\nKEY2±»°´ÏÂ,ÊÍ·ÅÒ»¸öÍ£³µÎ»¡£\r\n");	
+				printf("\r\nKEY2è¢«æŒ‰ä¸‹,é‡Šæ”¾ä¸€ä¸ªåœè½¦ä½ã€‚\r\n");	
 			else
-				printf("\r\nKEY2±»°´ÏÂ,Í£³µ³¡ÒÑÎª¿Õ£¬²»ÄÜÊÍ·Å£¡\r\n");	
+				printf("\r\nKEY2è¢«æŒ‰ä¸‹,åœè½¦åœºå·²ä¸ºç©ºï¼Œä¸èƒ½é‡Šæ”¾ï¼\r\n");	
 		}
 		vTaskDelay(20);
 	}
@@ -822,12 +822,12 @@ static void Receive_Task(void* pvParameters)
 	{
 		if(KEY_ON == Key_Scan(KEY1_GPIO_PORT,KEY1_GPIO_PIN))
 		{
-			//°´¼ü1°´ÏÂÊ±£¬¼ì²â¼ÆÊıĞÅºÅÁ¿ÊÇ·ñ¿É»ñµÃ(¼´ÊÇ·ñ´óÓÚ0),µÈ´ıÊ±¼äÎª0
+			//æŒ‰é”®1æŒ‰ä¸‹æ—¶ï¼Œæ£€æµ‹è®¡æ•°ä¿¡å·é‡æ˜¯å¦å¯è·å¾—(å³æ˜¯å¦å¤§äº0),ç­‰å¾…æ—¶é—´ä¸º0
 			xReturn = xSemaphoreTake(CountSem_Handle,0);
 			if(pdPASS == xReturn )
-				printf("\r\nKEY1±»°´ÏÂ,³É¹¦ÉêÇëµ½Í£³µÎ»¡£\r\n");	
+				printf("\r\nKEY1è¢«æŒ‰ä¸‹,æˆåŠŸç”³è¯·åˆ°åœè½¦ä½ã€‚\r\n");	
 			else
-				printf("\r\nKEY1±»°´ÏÂ,²»ºÃÒâË¼£¬ÏÖÔÚÍ£³µÎ»ÒÑÂú£¡\r\n");	
+				printf("\r\nKEY1è¢«æŒ‰ä¸‹,ä¸å¥½æ„æ€ï¼Œç°åœ¨åœè½¦ä½å·²æ»¡ï¼\r\n");	
 		}
 		vTaskDelay(20);
 	}
@@ -836,7 +836,7 @@ static void Receive_Task(void* pvParameters)
 
 static void Hardware_Init(void)
 {
-	/* ×¢Òâ£¬ÔÚFreeRTOSÏÂ£¬¾ù²ÉÓÃµÚËÄ¸ö·Ö×é£¬ÉèÖÃÒ»´Î¼´¿É */
+	/* æ³¨æ„ï¼Œåœ¨FreeRTOSä¸‹ï¼Œå‡é‡‡ç”¨ç¬¬å››ä¸ªåˆ†ç»„ï¼Œè®¾ç½®ä¸€æ¬¡å³å¯ */
 	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
 	
 	LED_GPIO_Config();
@@ -846,4 +846,361 @@ static void Hardware_Init(void)
 	Key_GPIO_Config();
 }
 
+
+#elif 0
+//å®éªŒä¸ƒï¼šæ¨¡æ‹Ÿä¼˜å…ˆçº§ç¿»è½¬å®éªŒ
+//äºŒå€¼ä¿¡å·é‡ä¸ä¼šè‡ªå¸¦ä¼˜å…ˆçº§ç»§æ‰¿ï¼Œæ‰€ä»¥ä¼šå‘ç”Ÿä¼˜å…ˆçº§ç¿»è½¬çš„ç°è±¡.
+
+//FreeRTOS
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+//ç¡¬ä»¶
+#include "bsp_led.h"
+#include "bsp_usart.h"
+#include "bsp_key.h"
+
+//ä½¿ç”¨åˆ°çš„ä»»åŠ¡å¥æŸ„
+static TaskHandle_t AppTaskCreate_Handle;
+static TaskHandle_t LowPriority_Task_Handle = NULL;/* LowPriority_Taskä»»åŠ¡å¥æŸ„ */
+static TaskHandle_t MidPriority_Task_Handle = NULL;/* MidPriority_Taskä»»åŠ¡å¥æŸ„ */
+static TaskHandle_t HighPriority_Task_Handle = NULL;/* HighPriority_Taskä»»åŠ¡å¥æŸ„ */
+static SemaphoreHandle_t BinarySem_Handle;
+
+
+/**********  å‡½æ•°å£°æ˜ **********/
+static void Hardware_Init(void);
+static void AppTaskCreate(void);
+static void LowPriority_Task(void* pvParameters);/* LowPriority_Taskä»»åŠ¡å®ç° */
+static void MidPriority_Task(void* pvParameters);/* MidPriority_Taskä»»åŠ¡å®ç° */
+static void HighPriority_Task(void* pvParameters);/* MidPriority_Taskä»»åŠ¡å®ç° */
+
+int main(void)
+{	
+	BaseType_t xReturn = pdPASS;
+	//ç¡¬ä»¶åˆå§‹åŒ–
+  Hardware_Init();
+	
+	//å†…å­˜çš„åˆå§‹åŒ–RTOSè‡ªåŠ¨å¸®åŠ©åˆå§‹åŒ–ï¼Œæ— éœ€ç”¨æˆ·è‡ªå·±é…ç½®ï¼Œè‹¥æ¢äº†RTT liteos éœ€è¦ç”¨æˆ·é…ç½®
+	
+	printf("è¿™æ˜¯ä¸€ä¸ªSTM32_FreeRTOS_æ¶ˆæ¯é˜Ÿåˆ—å‘æ”¶ä¿¡æ¯çš„å®éªŒï¼\n");
+	
+	//åŠ¨æ€å†…å­˜ä¸‹åˆ›å»ºä»»åŠ¡
+	xReturn =  xTaskCreate(	(TaskFunction_t) AppTaskCreate,
+													(char *) "AppTaskCreate",
+													(uint16_t) 512,
+													NULL,
+													(UBaseType_t) 2,
+													(TaskHandle_t *)&AppTaskCreate_Handle );
+	if(pdPASS == xReturn)
+	//å¯ç”¨è°ƒåº¦å™¨
+		vTaskStartScheduler();
+	
+	while(1)
+	{
+		printf("ERROR:è°ƒåº¦å™¨æœªå¯ç”¨æˆåŠŸï¼\n");
+	};
+}
+
+
+static void AppTaskCreate(void)
+{
+  BaseType_t xReturn = pdPASS;/* å®šä¹‰ä¸€ä¸ªåˆ›å»ºä¿¡æ¯è¿”å›å€¼ï¼Œé»˜è®¤ä¸ºpdPASS */
+  
+  taskENTER_CRITICAL();           //è¿›å…¥ä¸´ç•ŒåŒº
+  
+  /* åˆ›å»ºTest_Queue */
+  BinarySem_Handle = xSemaphoreCreateBinary();	 
+  if(NULL != BinarySem_Handle)
+    printf("BinarySem_HandleäºŒå€¼ä¿¡å·é‡åˆ›å»ºæˆåŠŸ!\r\n");
+
+  xReturn = xSemaphoreGive( BinarySem_Handle );//ç»™å‡ºäºŒå€¼ä¿¡å·é‡
+//  if( xReturn == pdTRUE )
+//    printf("é‡Šæ”¾ä¿¡å·é‡!\r\n");
+    
+  /* åˆ›å»ºLowPriority_Taskä»»åŠ¡ */
+  xReturn = xTaskCreate((TaskFunction_t )LowPriority_Task, /* ä»»åŠ¡å…¥å£å‡½æ•° */
+                        (const char*    )"LowPriority_Task",/* ä»»åŠ¡åå­— */
+                        (uint16_t       )512,   /* ä»»åŠ¡æ ˆå¤§å° */
+                        (void*          )NULL,	/* ä»»åŠ¡å…¥å£å‡½æ•°å‚æ•° */
+                        (UBaseType_t    )2,	    /* ä»»åŠ¡çš„ä¼˜å…ˆçº§ */
+                        (TaskHandle_t*  )&LowPriority_Task_Handle);/* ä»»åŠ¡æ§åˆ¶å—æŒ‡é’ˆ */
+  if(pdPASS == xReturn)
+    printf("åˆ›å»ºLowPriority_Taskä»»åŠ¡æˆåŠŸ!\r\n");
+  
+  /* åˆ›å»ºMidPriority_Taskä»»åŠ¡ */
+  xReturn = xTaskCreate((TaskFunction_t )MidPriority_Task,  /* ä»»åŠ¡å…¥å£å‡½æ•° */
+                        (const char*    )"MidPriority_Task",/* ä»»åŠ¡åå­— */
+                        (uint16_t       )512,  /* ä»»åŠ¡æ ˆå¤§å° */
+                        (void*          )NULL,/* ä»»åŠ¡å…¥å£å‡½æ•°å‚æ•° */
+                        (UBaseType_t    )3, /* ä»»åŠ¡çš„ä¼˜å…ˆçº§ */
+                        (TaskHandle_t*  )&MidPriority_Task_Handle);/* ä»»åŠ¡æ§åˆ¶å—æŒ‡é’ˆ */ 
+  if(pdPASS == xReturn)
+    printf("åˆ›å»ºMidPriority_Taskä»»åŠ¡æˆåŠŸ!\n");
+  
+  /* åˆ›å»ºHighPriority_Taskä»»åŠ¡ */
+  xReturn = xTaskCreate((TaskFunction_t )HighPriority_Task,  /* ä»»åŠ¡å…¥å£å‡½æ•° */
+                        (const char*    )"HighPriority_Task",/* ä»»åŠ¡åå­— */
+                        (uint16_t       )512,  /* ä»»åŠ¡æ ˆå¤§å° */
+                        (void*          )NULL,/* ä»»åŠ¡å…¥å£å‡½æ•°å‚æ•° */
+                        (UBaseType_t    )4, /* ä»»åŠ¡çš„ä¼˜å…ˆçº§ */
+                        (TaskHandle_t*  )&HighPriority_Task_Handle);/* ä»»åŠ¡æ§åˆ¶å—æŒ‡é’ˆ */ 
+  if(pdPASS == xReturn)
+    printf("åˆ›å»ºHighPriority_Taskä»»åŠ¡æˆåŠŸ!\n\n");
+  
+  vTaskDelete(AppTaskCreate_Handle); //åˆ é™¤AppTaskCreateä»»åŠ¡
+  
+  taskEXIT_CRITICAL();            //é€€å‡ºä¸´ç•ŒåŒº
+}
+
+
+static void LowPriority_Task(void* parameter)
+{	
+  static uint32_t i;
+  BaseType_t xReturn = pdPASS;/* å®šä¹‰ä¸€ä¸ªåˆ›å»ºä¿¡æ¯è¿”å›å€¼ï¼Œé»˜è®¤ä¸ºpdPASS */
+  while (1)
+  {
+    printf("LowPriority_Task è·å–ä¿¡å·é‡\n");
+    //è·å–äºŒå€¼ä¿¡å·é‡ xSemaphore,æ²¡è·å–åˆ°åˆ™ä¸€ç›´ç­‰å¾…
+		xReturn = xSemaphoreTake(BinarySem_Handle,/* äºŒå€¼ä¿¡å·é‡å¥æŸ„ */
+                              portMAX_DELAY); /* ç­‰å¾…æ—¶é—´ */
+    if( xReturn == pdTRUE )
+      printf("LowPriority_Task Running\n\n");
+    
+    for(i=0;i<2000000;i++)//æ¨¡æ‹Ÿä½ä¼˜å…ˆçº§ä»»åŠ¡å ç”¨ä¿¡å·é‡
+		{
+			taskYIELD();//å‘èµ·ä»»åŠ¡è°ƒåº¦
+		}
+    
+    printf("LowPriority_Task é‡Šæ”¾ä¿¡å·é‡!\r\n");
+    xReturn = xSemaphoreGive( BinarySem_Handle );//ç»™å‡ºäºŒå€¼ä¿¡å·é‡
+//    if( xReturn == pdTRUE )
+//      ;             /* ä»€ä¹ˆéƒ½ä¸åš */
+    
+		LED1_TOGGLE;
+    
+    vTaskDelay(500);
+  }
+}
+
+static void MidPriority_Task(void* parameter)
+{	 
+  while (1)
+  {
+   printf("MidPriority_Task Running\n");
+   vTaskDelay(500);
+  }
+}
+
+
+static void HighPriority_Task(void* parameter)
+{	
+  BaseType_t xReturn = pdTRUE;/* å®šä¹‰ä¸€ä¸ªåˆ›å»ºä¿¡æ¯è¿”å›å€¼ï¼Œé»˜è®¤ä¸ºpdPASS */
+  while (1)
+  {
+    printf("HighPriority_Task è·å–ä¿¡å·é‡\n");
+    //è·å–äºŒå€¼ä¿¡å·é‡ xSemaphore,æ²¡è·å–åˆ°åˆ™ä¸€ç›´ç­‰å¾…
+		xReturn = xSemaphoreTake(BinarySem_Handle,/* äºŒå€¼ä¿¡å·é‡å¥æŸ„ */
+                              portMAX_DELAY); /* ç­‰å¾…æ—¶é—´ */
+    if(pdTRUE == xReturn)
+      printf("HighPriority_Task Running\n");
+		LED1_TOGGLE;
+    xReturn = xSemaphoreGive( BinarySem_Handle );//ç»™å‡ºäºŒå€¼ä¿¡å·é‡
+//    if( xReturn == pdTRUE )
+      //printf("HighPriority_Task é‡Šæ”¾ä¿¡å·é‡!\r\n");
+  
+    vTaskDelay(500);
+  }
+}
+
+static void Hardware_Init(void)
+{
+	/* æ³¨æ„ï¼Œåœ¨FreeRTOSä¸‹ï¼Œå‡é‡‡ç”¨ç¬¬å››ä¸ªåˆ†ç»„ï¼Œè®¾ç½®ä¸€æ¬¡å³å¯ */
+	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
+	
+	LED_GPIO_Config();
+
+	USART_Config();
+	
+	Key_GPIO_Config();
+}
+
+#elif 1
+//å®éªŒå…«ï¼šäº’æ–¥é‡é™ä½ä¼˜å…ˆçº§ç¿»è½¬å±å®³å®éªŒ äº’æ–¥å¸¦ä¼˜å…ˆçº§ç»§æ‰¿ï¼ˆFreeRTOS.hä¸­çš„å®å®šä¹‰ configUSE_MUTEXES ç½®1ï¼‰
+
+//FreeRTOS
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+//ç¡¬ä»¶
+#include "bsp_led.h"
+#include "bsp_usart.h"
+#include "bsp_key.h"
+
+//ä½¿ç”¨åˆ°çš„ä»»åŠ¡å¥æŸ„
+static TaskHandle_t AppTaskCreate_Handle;
+static TaskHandle_t LowPriority_Task_Handle = NULL;/* LowPriority_Taskä»»åŠ¡å¥æŸ„ */
+static TaskHandle_t MidPriority_Task_Handle = NULL;/* MidPriority_Taskä»»åŠ¡å¥æŸ„ */
+static TaskHandle_t HighPriority_Task_Handle = NULL;/* HighPriority_Taskä»»åŠ¡å¥æŸ„ */
+static SemaphoreHandle_t MuxSem_Handle;
+
+
+/**********  å‡½æ•°å£°æ˜ **********/
+static void Hardware_Init(void);
+static void AppTaskCreate(void);
+static void LowPriority_Task(void* pvParameters);/* LowPriority_Taskä»»åŠ¡å®ç° */
+static void MidPriority_Task(void* pvParameters);/* MidPriority_Taskä»»åŠ¡å®ç° */
+static void HighPriority_Task(void* pvParameters);/* MidPriority_Taskä»»åŠ¡å®ç° */
+
+int main(void)
+{	
+	BaseType_t xReturn = pdPASS;
+	//ç¡¬ä»¶åˆå§‹åŒ–
+  Hardware_Init();
+	
+	//å†…å­˜çš„åˆå§‹åŒ–RTOSè‡ªåŠ¨å¸®åŠ©åˆå§‹åŒ–ï¼Œæ— éœ€ç”¨æˆ·è‡ªå·±é…ç½®ï¼Œè‹¥æ¢äº†RTT liteos éœ€è¦ç”¨æˆ·é…ç½®
+	
+	printf("è¿™æ˜¯ä¸€ä¸ªSTM32_FreeRTOS_æ¶ˆæ¯é˜Ÿåˆ—å‘æ”¶ä¿¡æ¯çš„å®éªŒï¼\n");
+	
+	//åŠ¨æ€å†…å­˜ä¸‹åˆ›å»ºä»»åŠ¡
+	xReturn =  xTaskCreate(	(TaskFunction_t) AppTaskCreate,
+													(char *) "AppTaskCreate",
+													(uint16_t) 512,
+													NULL,
+													(UBaseType_t) 2,
+													(TaskHandle_t *)&AppTaskCreate_Handle );
+	if(pdPASS == xReturn)
+	//å¯ç”¨è°ƒåº¦å™¨
+		vTaskStartScheduler();
+	
+	while(1)
+	{
+		printf("ERROR:è°ƒåº¦å™¨æœªå¯ç”¨æˆåŠŸï¼\n");
+	};
+}
+
+
+static void AppTaskCreate(void)
+{
+  BaseType_t xReturn = pdPASS;/* å®šä¹‰ä¸€ä¸ªåˆ›å»ºä¿¡æ¯è¿”å›å€¼ï¼Œé»˜è®¤ä¸ºpdPASS */
+  
+  taskENTER_CRITICAL();           //è¿›å…¥ä¸´ç•ŒåŒº
+  
+  /* åˆ›å»ºTest_Queue */
+  MuxSem_Handle = xSemaphoreCreateMutex();
+  if(NULL != MuxSem_Handle)
+    printf("BinarySem_HandleäºŒå€¼ä¿¡å·é‡åˆ›å»ºæˆåŠŸ!\r\n");
+
+  xReturn = xSemaphoreGive( MuxSem_Handle );//ç»™å‡ºäºŒå€¼ä¿¡å·é‡
+//  if( xReturn == pdTRUE )
+//    printf("é‡Šæ”¾ä¿¡å·é‡!\r\n");
+    
+  /* åˆ›å»ºLowPriority_Taskä»»åŠ¡ */
+  xReturn = xTaskCreate((TaskFunction_t )LowPriority_Task, /* ä»»åŠ¡å…¥å£å‡½æ•° */
+                        (const char*    )"LowPriority_Task",/* ä»»åŠ¡åå­— */
+                        (uint16_t       )512,   /* ä»»åŠ¡æ ˆå¤§å° */
+                        (void*          )NULL,	/* ä»»åŠ¡å…¥å£å‡½æ•°å‚æ•° */
+                        (UBaseType_t    )2,	    /* ä»»åŠ¡çš„ä¼˜å…ˆçº§ */
+                        (TaskHandle_t*  )&LowPriority_Task_Handle);/* ä»»åŠ¡æ§åˆ¶å—æŒ‡é’ˆ */
+  if(pdPASS == xReturn)
+    printf("åˆ›å»ºLowPriority_Taskä»»åŠ¡æˆåŠŸ!\r\n");
+  
+  /* åˆ›å»ºMidPriority_Taskä»»åŠ¡ */
+  xReturn = xTaskCreate((TaskFunction_t )MidPriority_Task,  /* ä»»åŠ¡å…¥å£å‡½æ•° */
+                        (const char*    )"MidPriority_Task",/* ä»»åŠ¡åå­— */
+                        (uint16_t       )512,  /* ä»»åŠ¡æ ˆå¤§å° */
+                        (void*          )NULL,/* ä»»åŠ¡å…¥å£å‡½æ•°å‚æ•° */
+                        (UBaseType_t    )3, /* ä»»åŠ¡çš„ä¼˜å…ˆçº§ */
+                        (TaskHandle_t*  )&MidPriority_Task_Handle);/* ä»»åŠ¡æ§åˆ¶å—æŒ‡é’ˆ */ 
+  if(pdPASS == xReturn)
+    printf("åˆ›å»ºMidPriority_Taskä»»åŠ¡æˆåŠŸ!\n");
+  
+  /* åˆ›å»ºHighPriority_Taskä»»åŠ¡ */
+  xReturn = xTaskCreate((TaskFunction_t )HighPriority_Task,  /* ä»»åŠ¡å…¥å£å‡½æ•° */
+                        (const char*    )"HighPriority_Task",/* ä»»åŠ¡åå­— */
+                        (uint16_t       )512,  /* ä»»åŠ¡æ ˆå¤§å° */
+                        (void*          )NULL,/* ä»»åŠ¡å…¥å£å‡½æ•°å‚æ•° */
+                        (UBaseType_t    )4, /* ä»»åŠ¡çš„ä¼˜å…ˆçº§ */
+                        (TaskHandle_t*  )&HighPriority_Task_Handle);/* ä»»åŠ¡æ§åˆ¶å—æŒ‡é’ˆ */ 
+  if(pdPASS == xReturn)
+    printf("åˆ›å»ºHighPriority_Taskä»»åŠ¡æˆåŠŸ!\n\n");
+  
+  vTaskDelete(AppTaskCreate_Handle); //åˆ é™¤AppTaskCreateä»»åŠ¡
+  
+  taskEXIT_CRITICAL();            //é€€å‡ºä¸´ç•ŒåŒº
+}
+
+
+static void LowPriority_Task(void* parameter)
+{	
+  static uint32_t i;
+  BaseType_t xReturn = pdPASS;/* å®šä¹‰ä¸€ä¸ªåˆ›å»ºä¿¡æ¯è¿”å›å€¼ï¼Œé»˜è®¤ä¸ºpdPASS */
+  while (1)
+  {
+    printf("LowPriority_Task è·å–ä¿¡å·é‡\n");
+    //è·å–äºŒå€¼ä¿¡å·é‡ xSemaphore,æ²¡è·å–åˆ°åˆ™ä¸€ç›´ç­‰å¾…
+		xReturn = xSemaphoreTake(MuxSem_Handle,/* äºŒå€¼ä¿¡å·é‡å¥æŸ„ */
+                              portMAX_DELAY); /* ç­‰å¾…æ—¶é—´ */
+    if( xReturn == pdTRUE )
+      printf("LowPriority_Task Running\n\n");
+    
+    for(i=0;i<2000000;i++)//æ¨¡æ‹Ÿä½ä¼˜å…ˆçº§ä»»åŠ¡å ç”¨ä¿¡å·é‡
+		{
+			taskYIELD();//å‘èµ·ä»»åŠ¡è°ƒåº¦
+		}
+    
+    printf("LowPriority_Task é‡Šæ”¾ä¿¡å·é‡!\r\n");
+    xReturn = xSemaphoreGive( MuxSem_Handle );//ç»™å‡ºäºŒå€¼ä¿¡å·é‡
+//    if( xReturn == pdTRUE )
+//      ;             /* ä»€ä¹ˆéƒ½ä¸åš */
+    
+		LED1_TOGGLE;
+    
+    vTaskDelay(500);
+  }
+}
+
+static void MidPriority_Task(void* parameter)
+{	 
+  while (1)
+  {
+   printf("MidPriority_Task Running\n");
+   vTaskDelay(500);
+  }
+}
+
+
+static void HighPriority_Task(void* parameter)
+{	
+  BaseType_t xReturn = pdTRUE;/* å®šä¹‰ä¸€ä¸ªåˆ›å»ºä¿¡æ¯è¿”å›å€¼ï¼Œé»˜è®¤ä¸ºpdPASS */
+  while (1)
+  {
+    printf("HighPriority_Task è·å–ä¿¡å·é‡\n");
+    //è·å–äºŒå€¼ä¿¡å·é‡ xSemaphore,æ²¡è·å–åˆ°åˆ™ä¸€ç›´ç­‰å¾…
+		xReturn = xSemaphoreTake(MuxSem_Handle,/* äºŒå€¼ä¿¡å·é‡å¥æŸ„ */
+                              portMAX_DELAY); /* ç­‰å¾…æ—¶é—´ */
+    if(pdTRUE == xReturn)
+      printf("HighPriority_Task Running\n");
+		LED1_TOGGLE;
+    xReturn = xSemaphoreGive( MuxSem_Handle );//ç»™å‡ºäºŒå€¼ä¿¡å·é‡
+//    if( xReturn == pdTRUE )
+      //printf("HighPriority_Task é‡Šæ”¾ä¿¡å·é‡!\r\n");
+  
+    vTaskDelay(500);
+  }
+}
+
+static void Hardware_Init(void)
+{
+	/* æ³¨æ„ï¼Œåœ¨FreeRTOSä¸‹ï¼Œå‡é‡‡ç”¨ç¬¬å››ä¸ªåˆ†ç»„ï¼Œè®¾ç½®ä¸€æ¬¡å³å¯ */
+	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
+	
+	LED_GPIO_Config();
+
+	USART_Config();
+	
+	Key_GPIO_Config();
+}
 #endif 
