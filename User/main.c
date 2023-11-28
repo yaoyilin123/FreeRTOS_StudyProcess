@@ -1026,7 +1026,7 @@ static void Hardware_Init(void)
 	Key_GPIO_Config();
 }
 
-#elif 1
+#elif 0
 //实验八：互斥量降低优先级翻转危害实验 互斥带优先级继承（FreeRTOS.h中的宏定义 configUSE_MUTEXES 置1）
 
 //FreeRTOS
@@ -1203,4 +1203,286 @@ static void Hardware_Init(void)
 	
 	Key_GPIO_Config();
 }
-#endif 
+
+#elif 0
+//实验九：事件实验
+
+//FreeRTOS
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+#include "event_groups.h"
+//硬件
+#include "bsp_led.h"
+#include "bsp_usart.h"
+#include "bsp_key.h"
+
+//使用到的任务句柄
+static TaskHandle_t AppTaskCreate_Handle;
+static TaskHandle_t Key_Handle;
+static TaskHandle_t Receive_Handle;
+static EventGroupHandle_t Event_Handle;
+
+/**********  函数声明 **********/
+static void Hardware_Init(void);
+static void AppTaskCreate(void);
+static void Key_Task();
+static void Receive_Task();
+
+#define Key1_Bit_1    1<<1
+#define Key2_Bit_4    1<<4
+
+int main(void)
+{	
+	BaseType_t xReturn = pdPASS;
+	//硬件初始化
+  Hardware_Init();
+	
+	//内存的初始化RTOS自动帮助初始化，无需用户自己配置，若换了RTT liteos 需要用户配置
+	
+	printf("这是一个STM32_FreeRTOS_消息队列发收信息的实验！\n");
+	
+	//动态内存下创建任务
+	xReturn =  xTaskCreate(	(TaskFunction_t) AppTaskCreate,
+													(char *) "AppTaskCreate",
+													(uint16_t) 512,
+													NULL,
+													(UBaseType_t) 2,
+													(TaskHandle_t *)&AppTaskCreate_Handle );
+	if(pdPASS == xReturn)
+	//启用调度器
+		vTaskStartScheduler();
+	
+	while(1)
+	{
+		printf("ERROR:调度器未启用成功！\n");
+	};
+}
+
+
+static void AppTaskCreate(void)
+{
+  BaseType_t xReturn = pdPASS;/* 定义一个创建信息返回值，默认为pdPASS */
+  
+  taskENTER_CRITICAL();           //进入临界区
+  
+  //创建事件
+	Event_Handle = xEventGroupCreate();
+	if(Event_Handle != NULL)
+    printf("事件创建成功!\r\n");
+
+
+    
+	//创建任务
+  xReturn = xTaskCreate((TaskFunction_t )Key_Task, /* 任务入口函数 */
+                        (const char*    )"Key_Task",/* 任务名字 */
+                        (uint16_t       )512,   /* 任务栈大小 */
+                        (void*          )NULL,	/* 任务入口函数参数 */
+                        (UBaseType_t    )2,	    /* 任务的优先级 */
+                        (TaskHandle_t*  )&Key_Handle);/* 任务控制块指针 */
+  if(pdPASS == xReturn)
+    printf("创建Key_Task成功!\r\n");
+	
+  xReturn = xTaskCreate((TaskFunction_t )Receive_Task, /* 任务入口函数 */
+                        (const char*    )"Receive_Task",/* 任务名字 */
+                        (uint16_t       )512,   /* 任务栈大小 */
+                        (void*          )NULL,	/* 任务入口函数参数 */
+                        (UBaseType_t    )2,	    /* 任务的优先级 */
+                        (TaskHandle_t*  )&Receive_Handle);/* 任务控制块指针 */
+  if(pdPASS == xReturn)
+    printf("创建Receive_Task成功!\r\n");
+
+  
+  vTaskDelete(AppTaskCreate_Handle); //删除AppTaskCreate任务
+  
+  taskEXIT_CRITICAL();            //退出临界区
+}
+
+
+
+static void Key_Task(void* parameter)
+{	 
+
+  while (1)
+	{
+		//当按键1被按下的时候置事件的bit1为1
+		if(KEY_ON == Key_Scan(KEY1_GPIO_PORT,KEY1_GPIO_PIN))
+		{
+			printf("KEY1按键被按下。\r\n");
+			xEventGroupSetBits(Event_Handle,Key1_Bit_1);
+//			LED1_TOGGLE;
+		}
+		//当按键2被按下的时候置事件的bit4为1
+		if(KEY_ON == Key_Scan(KEY2_GPIO_PORT,KEY2_GPIO_PIN))
+		{
+			printf("KEY2按键被按下。\r\n");
+			xEventGroupSetBits(Event_Handle,Key2_Bit_4);
+//			LED2_TOGGLE;			
+		}
+		vTaskDelay(20);
+  }
+}
+
+static void Receive_Task(void* parameter)
+{
+	EventBits_t xReturn ;
+	while(1)
+	{
+		//等待的是1.4位   10010
+	 xReturn = xEventGroupWaitBits(Event_Handle,0x12,pdTRUE,pdTRUE,portMAX_DELAY);
+		if((xReturn & (Key1_Bit_1|Key2_Bit_4)) == (Key1_Bit_1|Key2_Bit_4))
+		{
+			printf("KEY1和KEY2按键都被按下。\r\n");
+			LED3_TOGGLE;
+		}
+		else
+		{
+			printf("ERROR:时间溢出！\r\n");
+		}
+		//xEventGroupClearBits(Event_Handle,(Key1_Bit_1|Key2_Bit_4));
+	}
+
+}
+
+
+static void Hardware_Init(void)
+{
+	/* 注意，在FreeRTOS下，均采用第四个分组，设置一次即可 */
+	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
+	
+	LED_GPIO_Config();
+
+	USART_Config();
+	
+	Key_GPIO_Config();
+}
+
+#elif 0
+//实验十：软件定时器实验	(需要将FreeRTOSConfig.h 中的configUSE_TIMERS 置1)
+//步骤：1.调度器中自动创建软件定时器任务
+//2.创建软件定时器，如果创建成功就激活
+//3.分别创建其对应回调函数
+
+//FreeRTOS
+#include "FreeRTOS.h"
+#include "task.h"
+#include "timers.h"
+
+//硬件
+#include "bsp_led.h"
+#include "bsp_usart.h"
+#include "bsp_key.h"
+
+//使用到的任务句柄
+static TaskHandle_t AppTaskCreate_Handle;
+static TimerHandle_t Timer1_Handle;
+static TimerHandle_t Timer2_Handle;
+
+/**********  函数声明 **********/
+static void Hardware_Init(void);
+static void AppTaskCreate(void);
+static void Timer1CallBackFunction(void* parameter);
+static void Timer2CallBackFunction(void* parameter);
+
+
+
+int main(void)
+{	
+	BaseType_t xReturn = pdPASS;
+	//硬件初始化
+  Hardware_Init();
+	
+	//内存的初始化RTOS自动帮助初始化，无需用户自己配置，若换了RTT liteos 需要用户配置
+	
+	printf("这是一个STM32_FreeRTOS_消息队列发收信息的实验！\n");
+	
+	//动态内存下创建任务
+	xReturn =  xTaskCreate(	(TaskFunction_t) AppTaskCreate,
+													(char *) "AppTaskCreate",
+													(uint16_t) 512,
+													NULL,
+													(UBaseType_t) 2,
+													(TaskHandle_t *)&AppTaskCreate_Handle );
+	if(pdPASS == xReturn)
+	//启用调度器
+		vTaskStartScheduler();
+	
+	while(1)
+	{
+		printf("ERROR:调度器未启用成功！\n");
+	};
+}
+
+
+static void AppTaskCreate(void)
+{  
+  taskENTER_CRITICAL();           //进入临界区
+  
+  //创建软件定时器
+	Timer1_Handle = xTimerCreate(	 (char *)  "Timer1",
+															 (TickType_t) 1000,			//1000个tick一周期
+															 (UBaseType_t) pdTRUE,  //周期模式
+														 	 (void *) 1 ,
+															(TimerCallbackFunction_t) Timer1CallBackFunction );
+	if(NULL != Timer1_Handle)
+	{
+		xTimerStart(Timer1_Handle,0);
+		printf("Timer1 创建成功！");
+	}
+
+ 	Timer2_Handle = xTimerCreate(	 (char *)  "Timer2",
+															 (TickType_t) 5000,			//5000个tick一周期
+															 (UBaseType_t) pdFALSE,  //单次模式
+														 	 (void *) 2 ,
+															(TimerCallbackFunction_t) Timer2CallBackFunction );
+	if(NULL != Timer2_Handle)
+	{
+		xTimerStart(Timer2_Handle,0);
+		printf("Timer2 创建成功！");
+	}
+	
+
+
+  
+  vTaskDelete(AppTaskCreate_Handle); //删除AppTaskCreate任务
+  
+  taskEXIT_CRITICAL();            //退出临界区
+}
+
+
+//回调函数定期进入执行，在此不需要死循环了。
+static void Timer1CallBackFunction(void* parameter)
+{	 
+	static uint32_t i = 1 ;
+	
+	printf("Timer1 回调函数执行第 %d 次\r\n",i);
+	
+	i++;
+
+	printf("滴答定时器数值为:%d\r\n",	xTaskGetTickCount());
+}
+
+static void Timer2CallBackFunction(void* parameter)
+{	 
+	static uint8_t i =1;
+
+	printf("Timer2 回调函数执行第 %d 次\r\n",i);
+	
+	i++;
+
+	printf("滴答定时器数值为:%d\r\n",	xTaskGetTickCount());
+}
+
+static void Hardware_Init(void)
+{
+	/* 注意，在FreeRTOS下，均采用第四个分组，设置一次即可 */
+	NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
+	
+	LED_GPIO_Config();
+
+	USART_Config();
+	
+	Key_GPIO_Config();
+}
+#endif
